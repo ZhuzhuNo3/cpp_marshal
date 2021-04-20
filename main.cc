@@ -2,29 +2,20 @@
 #include <iostream>
 using namespace std;
 
+// use BUILD_MEM_IN_CLASS or BUILD_MEM
+
 struct test {
     int a = 1;
-    map<int, string> b = {{2,"2"}};
-    string to_string(const string & tab = "") const {
-        return
-            string("\"a\": ")
-            + std::to_string(a)
-            + "," + (tab.size() == 0 ? " " : "\n")
-            + string("\"b\": ")
-            + TO_STR(b, tab);
-    }
+    map<int, string> b = {{2,"2"},{3,"3"}};
+    BUILD_MEM_IN_CLASS(test,a,b);
 };
+
+// BUILD_MEM(test,a,b);
 
 int main()
 {
-    vector<test> vv = {
-        {}
-    };
-    map<string,char> x = {{"abc\ndef",'1'}};
-    map<int,const char> y = {{2,'2'}};
+    vector<test> vv = {{}};
     cout << TO_STR(vv) << endl << endl;
-    cout << TO_STR(vv, "  ") << endl << endl;
-    cout << TO_STR(x, "    ") << endl << endl;
-    cout << TO_STR(y) << endl << endl;
+    cout << TO_STR(vv,"  ") << endl << endl;
 }
 
