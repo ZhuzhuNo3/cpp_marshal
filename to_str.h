@@ -32,6 +32,12 @@ class CppSerialize
     template<template<typename...> class Ref, typename... Args>
         struct is_specialization<Ref<Args...>, Ref> : std::true_type {};
 
+    template<typename C>
+        struct is_pointer { static const bool value = false; };
+
+    template<typename C>
+        struct is_pointer<C*> { static const bool value = true; };
+
     template<typename C> std::string _print_arr(const C & a) {
         std::string s;
         bool addTab = _tab.size();
@@ -109,6 +115,13 @@ class CppSerialize
         return std::to_string(x);
     }
 
+
+    template<typename C> std::string _print(const C & x, typename std::enable_if<
+                                                   std::is_pointer<C>::value
+                                                   >::type* = nullptr)
+    { return _print(*x); }
+
+
     template<typename C> std::string _print(const C & v, typename std::enable_if<
                                                    is_specialization<C, std::vector>::value
                                                    || is_specialization<C, std::list>::value
@@ -162,7 +175,7 @@ public:
         return members;                                                               \
     };                                                                                \
     template<>                                                                        \
-    class CppSerialize<Type>                                                                 \
+    class CppSerialize<Type>                                                          \
     {                                                                                 \
         void _add_tab(std::string & s) {                                              \
             if (_tab.size() != 0) {                                                   \
