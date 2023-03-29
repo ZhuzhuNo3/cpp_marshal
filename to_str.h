@@ -115,6 +115,21 @@ class CppSerialize
         return std::to_string(x);
     }
 
+    template<typename C> std::string _print_pair(const C & a, typename std::enable_if<
+                                                   is_specialization<C, std::pair>::value
+                                                   >::type* = nullptr) {
+        std::string s;
+        bool addTab = _tab.size();
+        s += CppSerialize<decltype(a.first)>(a.first, _tab).Str()
+            + ","
+            + (addTab ? "\n" : " ");
+        s += CppSerialize<decltype(a.second)>(a.second, _tab).Str();
+        _add_tab(s);
+        if (_tab.size() != 0) {
+            s = "\n" + s + "\n";
+        }
+        return "<" + s + ">";
+    }
 
     template<typename C> std::string _print(const C & x, typename std::enable_if<
                                                    std::is_pointer<C>::value
